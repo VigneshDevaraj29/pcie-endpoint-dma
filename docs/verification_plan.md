@@ -13,36 +13,63 @@ The verification objective is to demonstrate that the RTL behaves correctly for 
 The verification environment uses:
 
 ```text
+
 SystemVerilog
+
 Self-Checking Directed Testbenches
+
 UVM
+
 SystemVerilog Assertions
+
 Functional Coverage
+
 Code Coverage
+
 Python Regression Automation
+
 Synopsys VCS
+
 Synopsys DVE
+
 ```
 
 The verification process is organized into multiple levels:
 
 ```text
+
 Unit Verification
-      |
-      v
+
+      |
+
+      v
+
 Integration Verification
-      |
-      v
+
+      |
+
+      v
+
 Assertion-Based Verification
-      |
-      v
+
+      |
+
+      v
+
 UVM Verification
-      |
-      v
+
+      |
+
+      v
+
 Regression
-      |
-      v
+
+      |
+
+      v
+
 Coverage Closure
+
 ```
 
 ---
@@ -52,27 +79,49 @@ Coverage Closure
 The main verification objectives are:
 
 - Verify correct decoding of supported PCIe TLP types
+
 - Verify correct BAR0 address decoding
+
 - Verify local register accesses
+
 - Verify endpoint memory accesses
+
 - Verify posted Memory Write behavior
+
 - Verify non-posted Memory Read behavior
+
 - Verify Completion generation
+
 - Verify Completion with Data generation
+
 - Verify DMA register programming
+
 - Verify DMA read operation
+
 - Verify DMA write operation
+
 - Verify DMA transfer sequencing
+
 - Verify tag allocation
+
 - Verify outstanding request tracking
+
 - Verify Completion matching
+
 - Verify unexpected Completion detection
+
 - Verify duplicate-tag protection
+
 - Verify timeout handling
+
 - Verify error propagation
+
 - Verify valid/ready handshake behavior
+
 - Verify stable outputs under backpressure
+
 - Verify functional coverage goals
+
 - Verify clean multi-seed UVM regression
 
 ---
@@ -84,54 +133,91 @@ The verification plan covers the following supported functionality.
 ## PCIe Transaction Types
 
 ```text
+
 Memory Read
+
 Memory Write
+
 Completion
+
 Completion with Data
+
 ```
 
 ## PCIe Header Fields
 
 ```text
+
 Fmt
+
 Type
+
 Length
+
 Requester ID
+
 Completer ID
+
 Tag
+
 First DW Byte Enable
+
 Last DW Byte Enable
+
 Address
+
 Completion Status
+
 Byte Count
+
 Lower Address
+
 ```
 
 ## Endpoint Features
 
 ```text
+
 BAR0 decoding
+
 DMA registers
+
 Endpoint memory
+
 Completion generation
+
 TX arbitration
+
 TLP formatting
+
 ```
 
 ## DMA Features
 
 ```text
+
 Source address programming
+
 Destination address programming
+
 Transfer length programming
+
 Start control
+
 Busy status
+
 Done status
+
 Error status
+
 PCIe Memory Read generation
+
 PCIe Memory Write generation
+
 Completion handling
+
 Timeout handling
+
 ```
 
 ---
@@ -141,25 +227,45 @@ Timeout handling
 The following PCIe features are outside the current verification scope:
 
 ```text
+
 Physical Layer
+
 Data Link Layer
+
 SerDes
+
 PIPE interface
+
 LTSSM
+
 DLLP
+
 LCRC
+
 Replay
+
 ACK / NAK
+
 Credit-based flow control
+
 Configuration TLPs
+
 Message TLPs
+
 Atomic Operations
+
 MSI
+
 MSI-X
+
 64-bit addressing
+
 4DW Memory Requests
+
 Split Completions
+
 Multiple Completion packets for one request
+
 ```
 
 These features may be considered future extensions.
@@ -171,52 +277,97 @@ These features may be considered future extensions.
 The verification strategy contains both directed SystemVerilog testbenches and a reusable UVM environment.
 
 ```text
-                    +----------------+
-                    |   UVM TEST     |
-                    +--------+-------+
-                             |
-                             v
-                    +----------------+
-                    |   SEQUENCE     |
-                    +--------+-------+
-                             |
-                             v
-                    +----------------+
-                    |   SEQUENCER    |
-                    +--------+-------+
-                             |
-                             v
-                    +----------------+
-                    |    DRIVER      |
-                    +--------+-------+
-                             |
-                             v
-                         PCIe IF
-                             |
-                             v
-                    +----------------+
-                    |      DUT       |
-                    +--------+-------+
-                             |
-                             v
-                    +----------------+
-                    |    MONITOR     |
-                    +--------+-------+
-                             |
-                +------------+------------+
-                |                         |
-                v                         v
-         +-------------+           +-------------+
-         | SCOREBOARD  |           |  COVERAGE   |
-         +-------------+           +-------------+
 
-                    DMA STATUS IF
-                         |
-                         v
-                    DMA MONITOR
-                         |
-                         v
-                    SCOREBOARD
+                    +----------------+
+
+                    |   UVM TEST     |
+
+                    +--------+-------+
+
+                             |
+
+                             v
+
+                    +----------------+
+
+                    |   SEQUENCE     |
+
+                    +--------+-------+
+
+                             |
+
+                             v
+
+                    +----------------+
+
+                    |   SEQUENCER    |
+
+                    +--------+-------+
+
+                             |
+
+                             v
+
+                    +----------------+
+
+                    |    DRIVER      |
+
+                    +--------+-------+
+
+                             |
+
+                             v
+
+                         PCIe IF
+
+                             |
+
+                             v
+
+                    +----------------+
+
+                    |      DUT       |
+
+                    +--------+-------+
+
+                             |
+
+                             v
+
+                    +----------------+
+
+                    |    MONITOR     |
+
+                    +--------+-------+
+
+                             |
+
+                +------------+------------+
+
+                |                         |
+
+                v                         v
+
+         +-------------+           +-------------+
+
+         | SCOREBOARD  |           |  COVERAGE   |
+
+         +-------------+           +-------------+
+
+                    DMA STATUS IF
+
+                         |
+
+                         v
+
+                    DMA MONITOR
+
+                         |
+
+                         v
+
+                    SCOREBOARD
+
 ```
 
 ---
@@ -230,30 +381,51 @@ Each RTL block is verified independently.
 Unit verification is intended to detect:
 
 - Basic functionality errors
+
 - State machine errors
+
 - Address decoding errors
+
 - Data-path errors
+
 - Handshake errors
+
 - Register behavior errors
+
 - Counter behavior errors
+
 - Tag-table errors
 
 Current unit tests:
 
 ```text
+
 tlp_rx_parser_tb.sv
+
 bar_decoder_tb.sv
+
 endpoint_memory_tb.sv
+
 request_handler_tb.sv
+
 completion_engine_tb.sv
+
 tlp_tx_formatter_tb.sv
+
 outstanding_req_table_tb.sv
+
 sync_fifo_tb.sv
+
 timeout_counter_tb.sv
+
 dma_regs_tb.sv
+
 dma_read_engine_tb.sv
+
 dma_write_engine_tb.sv
+
 dma_controller_tb.sv
+
 ```
 
 ---
@@ -267,14 +439,14 @@ dma_controller_tb.sv
 | `endpoint_memory.sv` | Read, write, byte enable, alignment |
 | `request_handler.sv` | MemRd/MemWr processing |
 | `completion_engine.sv` | Cpl and CplD construction |
-| `tlp_tx_formatter.sv` | Header formatting |
-| `outstanding_req_table.sv` | Allocate, match, cancel, duplicates |
+| `tlp_tx_formatter.sv` | Header formatting and backpressure stability |
+| `outstanding_req_table.sv` | Allocate, match, cancel, duplicate protection, multiple active tags, out-of-order completion matching |
 | `sync_fifo.sv` | FIFO write/read/full/empty |
 | `timeout_counter.sv` | Start, count, timeout, clear |
-| `dma_regs.sv` | Register read/write/status |
-| `dma_read_engine.sv` | MemRd issue and Completion handling |
-| `dma_write_engine.sv` | Posted MemWr generation |
-| `dma_controller.sv` | Read/write sequencing |
+| `dma_regs.sv` | Register read/write/status and START gating while BUSY |
+| `dma_read_engine.sv` | MemRd issue, Completion handling, timeout/error paths |
+| `dma_write_engine.sv` | Posted MemWr generation and error path |
+| `dma_controller.sv` | Read/write sequencing, backpressure, multi-DWORD transfer, invalid length, error propagation, 256-byte / 64-DWORD stress |
 
 ---
 
@@ -285,9 +457,13 @@ Integration verification checks interaction between multiple RTL modules.
 Current integration testbenches:
 
 ```text
+
 pcie_endpoint_smoke_tb.sv
+
 pcie_dma_integration_tb.sv
+
 pcie_error_integration_tb.sv
+
 ```
 
 ---
@@ -297,44 +473,71 @@ pcie_error_integration_tb.sv
 The endpoint smoke test verifies:
 
 ```text
+
 Host MemWr
-     |
-     v
+
+     |
+
+     v
+
 BAR Decode
-     |
-     v
+
+     |
+
+     v
+
 Endpoint Memory Write
+
 ```
 
 followed by:
 
 ```text
+
 Host MemRd
-     |
-     v
+
+     |
+
+     v
+
 BAR Decode
-     |
-     v
+
+     |
+
+     v
+
 Endpoint Memory Read
-     |
-     v
+
+     |
+
+     v
+
 CplD
+
 ```
 
 It also verifies:
 
 ```text
+
 Invalid BAR MemRd
-      |
-      v
+
+      |
+
+      v
+
 UR Completion
+
 ```
 
 Expected results:
 
 - Posted Memory Write produces no Completion
+
 - Memory Read produces CplD
+
 - Returned payload matches stored memory data
+
 - Invalid BAR read produces UR
 
 ---
@@ -385,6 +588,14 @@ Checks include:
 - Outstanding entry is removed after Completion
 - DMA DONE is generated
 - DMA ERROR remains inactive
+- A START request issued while DMA is BUSY is ignored without duplicating or disrupting the active transfer
+- A fresh START issued after completion is accepted normally
+- Completion traffic wins over a pending DMA Memory Read under TX backpressure according to the fixed-priority arbiter
+- The losing DMA request is preserved and serviced after the Completion
+- Reset during an active DMA transfer clears active/outstanding state
+- A reprogrammed DMA transfer completes successfully after reset
+
+The current DMA read engine intentionally allows one outstanding DMA read at a time. Multi-entry, out-of-order behavior is verified independently at the outstanding-request-table unit level.
 
 ---
 
@@ -398,6 +609,7 @@ Unexpected Completion
 Completer Abort
 Completion Timeout
 Outstanding entry cleanup
+TX backpressure
 ```
 
 Expected behavior:
@@ -418,6 +630,8 @@ No Completion
     -> DMA ERROR
 ```
 
+The completion-timeout scenario was executed with a shortened directed timeout configuration and verified that the outstanding entry is removed when the DMA transfer terminates with an error.
+
 ---
 
 # 12. UVM Verification Strategy
@@ -427,21 +641,33 @@ The UVM environment provides reusable transaction-level verification.
 Major components:
 
 ```text
+
 PCIe Sequence Item
+
 PCIe Sequencer
+
 PCIe Driver
+
 PCIe Monitor
+
 PCIe Agent
 
 DMA Status Item
+
 DMA Monitor
+
 DMA Passive Agent
 
 Scoreboard
+
 Functional Coverage
+
 Environment
+
 Sequences
+
 Tests
+
 ```
 
 ---
@@ -453,32 +679,51 @@ The sequence item models one transaction.
 Fields include:
 
 ```text
+
 Direction
+
 TLP Kind
+
 Length
+
 Requester ID
+
 Completer ID
+
 Tag
+
 First BE
+
 Last BE
+
 Address
+
 Completion Status
+
 Byte Count
+
 Lower Address
+
 Payload Valid
+
 Payload Data
+
 ```
 
 The transaction can be converted to raw TLP DWORDs using:
 
 ```text
+
 pack_tlp()
+
 ```
 
 and decoded from raw DWORDs using:
 
 ```text
+
 decode_tlp()
+
 ```
 
 ---
@@ -490,36 +735,58 @@ The driver receives sequence items from the sequencer.
 Flow:
 
 ```text
+
 Sequence Item
-      |
-      v
+
+      |
+
+      v
+
 pack_tlp()
-      |
-      v
+
+      |
+
+      v
+
 Drive RX Header
-      |
-      v
+
+      |
+
+      v
+
 Drive Payload
-      |
-      v
+
+      |
+
+      v
+
 Assert rx_valid
-      |
-      v
+
+      |
+
+      v
+
 Wait for rx_ready
-      |
-      v
+
+      |
+
+      v
+
 Deassert Interface
+
 ```
 
 The driver also keeps:
 
 ```text
+
 tx_ready = 1
+
 ```
 
 for the initial environment.
 
-Future backpressure sequences may vary `tx_ready`.
+The base UVM environment keeps `tx_ready = 1`; TX backpressure and arbitration contention are verified in directed integration testing. Future UVM extensions may randomize `tx_ready`.
 
 ---
 
@@ -532,7 +799,9 @@ The monitor observes both directions.
 A transaction is captured when:
 
 ```text
+
 rx_valid && rx_ready
+
 ```
 
 ## TX Monitoring
@@ -540,7 +809,9 @@ rx_valid && rx_ready
 A transaction is captured when:
 
 ```text
+
 tx_valid && tx_ready
+
 ```
 
 The monitor reconstructs a `pcie_seq_item` and broadcasts it using an analysis port.
@@ -552,12 +823,19 @@ The monitor reconstructs a `pcie_seq_item` and broadcasts it using an analysis p
 The passive DMA monitor observes:
 
 ```text
+
 dma_busy
+
 dma_done
+
 dma_error
+
 unexpected_completion
+
 outstanding_count
+
 tx_formatter_error
+
 ```
 
 This information is forwarded to the scoreboard.
@@ -571,15 +849,25 @@ The scoreboard maintains a simplified reference model.
 Reference state includes:
 
 ```text
+
 Endpoint Memory Model
+
 Expected Completion Data
+
 Expected UR Completions
+
 DMA Source Address
+
 DMA Destination Address
+
 DMA Length
+
 DMA Active State
+
 DMA Outstanding Tag
+
 DMA Returned Data
+
 ```
 
 ---
@@ -589,37 +877,61 @@ DMA Returned Data
 For incoming host Memory Writes:
 
 ```text
+
 Host MemWr
-     |
-     v
+
+     |
+
+     v
+
 Monitor
-     |
-     v
+
+     |
+
+     v
+
 Scoreboard updates reference memory
+
 ```
 
 For incoming host Memory Reads:
 
 ```text
+
 Host MemRd
-     |
-     v
+
+     |
+
+     v
+
 Scoreboard looks up reference memory
-     |
-     v
+
+     |
+
+     v
+
 Expected CplD stored by Tag
+
 ```
 
 When DUT sends CplD:
 
 ```text
+
 Observed CplD
-     |
-     v
+
+     |
+
+     v
+
 Tag lookup
-     |
-     v
+
+     |
+
+     v
+
 Compare expected payload
+
 ```
 
 ---
@@ -629,32 +941,59 @@ Compare expected payload
 DMA checking is performed using observed PCIe transactions.
 
 ```text
+
 Host Programs DMA Registers
-      |
-      v
+
+      |
+
+      v
+
 Scoreboard stores config
-      |
-      v
+
+      |
+
+      v
+
 DUT sends MemRd
-      |
-      v
+
+      |
+
+      v
+
 Compare source address
-      |
-      v
+
+      |
+
+      v
+
 Capture Tag
-      |
-      v
+
+      |
+
+      v
+
 Host sends CplD
-      |
-      v
+
+      |
+
+      v
+
 Capture returned payload
-      |
-      v
+
+      |
+
+      v
+
 DUT sends MemWr
-      |
-      +--> Compare destination address
-      |
-      +--> Compare payload
+
+      |
+
+      +--> Compare destination address
+
+      |
+
+      +--> Compare payload
+
 ```
 
 ---
@@ -664,9 +1003,13 @@ DUT sends MemWr
 Current tests:
 
 ```text
+
 pcie_smoke_test
+
 pcie_dma_test
+
 pcie_error_test
+
 ```
 
 ---
@@ -676,11 +1019,17 @@ pcie_error_test
 The smoke test verifies:
 
 ```text
+
 Endpoint Memory Write
+
 Endpoint Memory Read
+
 Completion with Data
+
 Invalid BAR Read
+
 UR Completion
+
 ```
 
 ---
@@ -690,12 +1039,19 @@ UR Completion
 The DMA test verifies:
 
 ```text
+
 DMA register programming
+
 DMA start
+
 DMA Memory Read
+
 Completion with Data
+
 DMA Memory Write
+
 DMA completion
+
 ```
 
 ---
@@ -705,9 +1061,13 @@ DMA completion
 The error test verifies:
 
 ```text
+
 Invalid BAR
+
 Unexpected Completion
+
 DMA Completer Abort
+
 ```
 
 Timeout verification is currently handled directly in the integration environment and can later be added as a dedicated UVM sequence.
@@ -719,33 +1079,53 @@ Timeout verification is currently handled directly in the integration environmen
 Future constrained-random sequences should randomize:
 
 ```text
+
 Address
+
 Tag
+
 Payload Data
+
 Byte Enable
+
 Completion Status
+
 Completion Delay
+
 Backpressure
+
 Transfer Length
+
 DMA source
+
 DMA destination
+
 DMA length
+
 ```
 
 Example constraints:
 
 ```systemverilog
+
 constraint aligned_addr_c {
-  address[1:0] == 2'b00;
+
+  address[1:0] == 2'b00;
+
 }
 
 constraint supported_length_c {
-  length_dw inside {[1:16]};
+
+  length_dw inside {[1:16]};
+
 }
 
 constraint first_be_c {
-  first_be != 4'b0000;
+
+  first_be != 4'b0000;
+
 }
+
 ```
 
 ---
@@ -755,41 +1135,65 @@ constraint first_be_c {
 Future UVM tests may include:
 
 ```text
+
 pcie_random_traffic_test
+
 pcie_random_dma_test
+
 pcie_multi_outstanding_test
+
 pcie_out_of_order_completion_test
+
 pcie_random_error_test
+
 pcie_backpressure_test
+
 pcie_partial_write_test
+
 pcie_timeout_test
+
 ```
 
 ---
 
 # 26. Assertion-Based Verification
 
-Assertions are divided into three groups.
+Assertions are divided into three groups:
 
 ```text
-pcie_assertions.sv
-dma_assertions.sv
-tag_assertions.sv
+sva/pcie_assertions.sv
+sva/dma_assertions.sv
+sva/tag_assertions.sv
 ```
+
+The assertions are connected to the RTL hierarchy using:
+
+```text
+sva/sva_bind.sv
+```
+
+Directed assertion-closure tests exercised meaningful project properties that were not naturally hit by the UVM regression, including cancellation validity, duplicate-tag rejection, full-table consistency, TX stability under stall, and DMA command stability under backpressure.
 
 ---
 
 # 27. PCIe Assertions
 
-Planned/current PCIe properties include:
+Current PCIe properties include:
 
 - RX Memory Write must contain payload
+
 - RX Memory Read must not contain payload
+
 - TX Memory Write must contain payload
+
 - TX Memory Read must not contain payload
+
 - CplD must contain payload
+
 - Cpl must not contain payload
+
 - TX header must remain stable during backpressure
+
 - TX header must not contain X/Z while valid
 
 ---
@@ -799,11 +1203,17 @@ Planned/current PCIe properties include:
 DMA properties include:
 
 - DONE and ERROR cannot be high simultaneously
+
 - Read address must be DWORD aligned
+
 - Write address must be DWORD aligned
+
 - Read command must remain stable when stalled
+
 - Write command must remain stable when stalled
+
 - Read and write commands should not be generated simultaneously
+
 - DMA start addresses must be aligned
 
 ---
@@ -813,11 +1223,17 @@ DMA properties include:
 Tag-related properties include:
 
 - Duplicate outstanding tag cannot be accepted
+
 - Completion match and unexpected completion are mutually exclusive
+
 - Completion match requires valid Completion
+
 - Unexpected completion requires valid Completion
+
 - Cancellation match requires valid cancellation request
+
 - Outstanding count cannot exceed table capacity
+
 - Full-table indication must match maximum occupancy
 
 ---
@@ -829,17 +1245,25 @@ Functional coverage is used to measure scenario execution.
 Initial coverpoints:
 
 ```text
+
 Transaction Direction
+
 TLP Kind
+
 Transfer Length
+
 First Byte Enable
+
 Completion Status
+
 ```
 
 Cross coverage:
 
 ```text
+
 Direction x TLP Kind
+
 ```
 
 ---
@@ -849,18 +1273,31 @@ Direction x TLP Kind
 Additional planned coverpoints:
 
 ```text
+
 BAR hit / BAR miss
+
 Posted / Non-Posted
+
 Read / Write
+
 Full / Partial Byte Enable
+
 Completion Status
+
 DMA success / DMA error
+
 Timeout
+
 Unexpected Completion
+
 Outstanding count
+
 Tag value
+
 Completion latency
+
 Backpressure
+
 ```
 
 ---
@@ -870,6 +1307,7 @@ Backpressure
 Useful future crosses include:
 
 ```text
+
 TLP Type x Direction
 
 MemWr x Byte Enable
@@ -885,29 +1323,33 @@ Outstanding Count x Completion Order
 Tag x Completion Status
 
 Backpressure x TLP Type
+
 ```
 
 ---
 
 # 33. Code Coverage
 
-Planned code coverage metrics:
+Code coverage was collected using Synopsys VCS in the final merged UVM coverage regression.
 
-```text
-Line Coverage
-Branch Coverage
-Condition Coverage
-FSM Coverage
-Toggle Coverage
-```
+| Metric | Final Coverage |
+|---|---:|
+| Overall score | 72.07% |
+| Line | 92.56% |
+| Branch | 78.12% |
+| Condition | 74.38% |
+| FSM | 62.86% |
+| Toggle | 36.57% |
 
-Code coverage will be collected using Synopsys VCS.
+A targeted UVM register-pattern sequence increased `dma_regs` toggle coverage to **81.05%**.
+
+Remaining lower aggregate toggle/FSM coverage includes reset/default-recovery transitions and other structurally difficult or intentionally unexercised behavior. These gaps were reviewed rather than forced solely to increase the metric.
 
 ---
 
 # 34. Assertion Coverage
 
-Assertion coverage should track:
+Assertion coverage tracks:
 
 ```text
 Property attempts
@@ -916,13 +1358,18 @@ Property failures
 Cover-property hits
 ```
 
-The initial goal is to ensure:
+Final merged UVM assertion coverage was **66.67%** with **0 assertion failures**.
 
-```text
-0 unexpected assertion failures
-```
+The final report contained 24 assertions, 16 covered successes, 8 uncovered, 0 failures, and 0 incomplete assertions. Two assertions without attempts were Synopsys UVM library internals rather than project properties.
 
-before coverage closure.
+Directed tests separately exercised six meaningful project assertions that were otherwise uncovered in UVM, including:
+
+- Cancellation match requires valid cancellation
+- Duplicate tag cannot be accepted
+- Full-table count consistency
+- TX stability while stalled
+- DMA read command stability under backpressure
+- DMA write command stability under backpressure
 
 ---
 
@@ -931,20 +1378,27 @@ before coverage closure.
 Regression levels:
 
 ```text
+
 Level 1
+
 Unit Regression
 
 Level 2
+
 Integration Regression
 
 Level 3
+
 UVM Regression
 
 Level 4
+
 Multi-Seed UVM Regression
 
 Level 5
+
 Coverage Regression
+
 ```
 
 ---
@@ -956,13 +1410,17 @@ Unit regression runs all block-level testbenches.
 Command:
 
 ```bash
+
 python3 scripts/python/run_regression.py --unit
+
 ```
 
 Expected result:
 
 ```text
+
 All unit tests PASS
+
 ```
 
 ---
@@ -972,15 +1430,21 @@ All unit tests PASS
 Command:
 
 ```bash
+
 python3 scripts/python/run_regression.py --integration
+
 ```
 
 Expected tests:
 
 ```text
+
 smoke
+
 dma
+
 error
+
 ```
 
 ---
@@ -990,13 +1454,17 @@ error
 Command:
 
 ```bash
+
 python3 scripts/python/run_regression.py --uvm
+
 ```
 
 Multi-seed example:
 
 ```bash
+
 python3 scripts/python/run_regression.py --uvm --seeds 20
+
 ```
 
 ---
@@ -1006,16 +1474,23 @@ python3 scripts/python/run_regression.py --uvm --seeds 20
 Command:
 
 ```bash
+
 python3 scripts/python/run_regression.py --all --seeds 20
+
 ```
 
 This executes:
 
 ```text
+
 Unit Tests
+
 Integration Tests
+
 UVM Tests
+
 Multiple Seeds
+
 ```
 
 ---
@@ -1025,13 +1500,21 @@ Multiple Seeds
 A regression run is considered passing when:
 
 ```text
+
 No compile failure
+
 No simulation fatal
+
 No unexpected $error
+
 No UVM_FATAL
+
 No unexpected UVM_ERROR
+
 No assertion failures
+
 All self-checking comparisons pass
+
 ```
 
 ---
@@ -1041,43 +1524,81 @@ All self-checking comparisons pass
 When a test fails:
 
 ```text
+
 Failure
-  |
-  v
+
+  |
+
+  v
+
 Check Compile Log
-  |
-  v
+
+  |
+
+  v
+
 Check Simulation Log
-  |
-  v
+
+  |
+
+  v
+
 Identify First Error
-  |
-  v
+
+  |
+
+  v
+
 Reproduce Single Test
-  |
-  v
+
+  |
+
+  v
+
 Enable Waveform
-  |
-  v
+
+  |
+
+  v
+
 Open DVE
-  |
-  v
+
+  |
+
+  v
+
 Trace Interface
-  |
-  v
+
+  |
+
+  v
+
 Trace Internal FSM
-  |
-  v
+
+  |
+
+  v
+
 Determine Root Cause
-  |
-  v
+
+  |
+
+  v
+
 Fix RTL or TB
-  |
-  v
+
+  |
+
+  v
+
 Re-run Unit Test
-  |
-  v
+
+  |
+
+  v
+
 Re-run Regression
+
 ```
 
 ---
@@ -1087,57 +1608,87 @@ Re-run Regression
 Important signals for endpoint debugging:
 
 ```text
+
 rx_valid
+
 rx_ready
+
 rx_dw0
+
 rx_dw1
+
 rx_dw2
+
 rx_payload_valid
+
 rx_payload_data
+
 ```
 
 Important TX signals:
 
 ```text
+
 tx_valid
+
 tx_ready
+
 tx_dw0
+
 tx_dw1
+
 tx_dw2
+
 tx_payload_valid
+
 tx_payload_data
+
 ```
 
 Important DMA signals:
 
 ```text
+
 dma_start
+
 dma_busy
+
 dma_done
+
 dma_error
 
 read_cmd_valid
+
 read_cmd_ready
 
 write_cmd_valid
+
 write_cmd_ready
+
 ```
 
 Important tag signals:
 
 ```text
+
 alloc_valid
+
 alloc_ready
+
 alloc_tag
 
 cpl_valid
+
 cpl_tag
+
 cpl_match
 
 cancel_valid
+
 cancel_tag
 
 outstanding_count
+
 ```
 
 ---
@@ -1151,10 +1702,15 @@ Discovered bugs should be classified into categories.
 Examples:
 
 ```text
+
 Wrong Completion data
+
 Incorrect address increment
+
 Incorrect DMA state transition
+
 Tag not released
+
 ```
 
 ## Protocol Bug
@@ -1162,9 +1718,13 @@ Tag not released
 Examples:
 
 ```text
+
 MemWr generating Completion
+
 MemRd missing Completion
+
 Payload present on incorrect TLP
+
 ```
 
 ## Verification Environment Bug
@@ -1172,9 +1732,13 @@ Payload present on incorrect TLP
 Examples:
 
 ```text
+
 Scoreboard model incorrect
+
 Driver timing incorrect
+
 Monitor sampling incorrect
+
 ```
 
 ## Assertion Bug
@@ -1182,9 +1746,13 @@ Monitor sampling incorrect
 Examples:
 
 ```text
+
 Property too strict
+
 Incorrect sampling cycle
+
 Invalid disable condition
+
 ```
 
 ## Coverage Bug
@@ -1192,9 +1760,13 @@ Invalid disable condition
 Examples:
 
 ```text
+
 Unreachable bin
+
 Incorrect cross
+
 Wrong sampling event
+
 ```
 
 ---
@@ -1206,10 +1778,15 @@ Wrong sampling event
 Requirements:
 
 ```text
+
 All RTL files compile
+
 No unresolved modules
+
 No package errors
+
 No width errors requiring correction
+
 ```
 
 ---
@@ -1219,9 +1796,13 @@ No width errors requiring correction
 Requirements:
 
 ```text
+
 13 unit testbenches compile
+
 All directed checks pass
+
 No unexpected simulation errors
+
 ```
 
 ---
@@ -1231,9 +1812,13 @@ No unexpected simulation errors
 Requirements:
 
 ```text
+
 Endpoint Smoke PASS
+
 DMA Integration PASS
+
 Error Integration PASS
+
 ```
 
 ---
@@ -1243,9 +1828,13 @@ Error Integration PASS
 Requirements:
 
 ```text
+
 Assertions compile
+
 Assertions bind/instantiate correctly
+
 No unexpected assertion failures
+
 ```
 
 ---
@@ -1255,13 +1844,21 @@ No unexpected assertion failures
 Requirements:
 
 ```text
+
 UVM package compiles
+
 Interfaces connect
+
 Agent builds
+
 Driver runs
+
 Monitor runs
+
 Scoreboard receives transactions
+
 Coverage samples transactions
+
 ```
 
 ---
@@ -1271,9 +1868,13 @@ Coverage samples transactions
 Requirements:
 
 ```text
+
 pcie_smoke_test PASS
+
 pcie_dma_test PASS
+
 pcie_error_test PASS
+
 ```
 
 ---
@@ -1283,8 +1884,11 @@ pcie_error_test PASS
 Requirements:
 
 ```text
+
 Multiple seeds execute without unexpected errors
+
 Failures are reproducible by seed
+
 ```
 
 ---
@@ -1294,9 +1898,13 @@ Failures are reproducible by seed
 Requirements:
 
 ```text
+
 Code coverage generated
+
 Functional coverage generated
+
 Assertion coverage generated
+
 ```
 
 ---
@@ -1306,66 +1914,96 @@ Assertion coverage generated
 Requirements:
 
 ```text
+
 Review uncovered functionality
+
 Determine reachable vs unreachable
+
 Add targeted tests
+
 Add missing coverpoints
+
 Re-run regression
+
 ```
 
 ---
 
 # 45. Verification Exit Criteria
 
-The project can be considered verification-complete for its defined scope when:
+The project is verification-complete for its defined scope because the following exit criteria were satisfied:
 
 ```text
-All RTL compiles successfully
-All unit tests pass
-All integration tests pass
-All planned UVM tests pass
+RTL compiles successfully
+13/13 unit tests pass
+3/3 integration tests pass
+15/15 UVM runs pass across smoke/DMA/error seeds 1-5
 No unexpected assertion failures
-No UVM_FATAL
-No unexplained UVM_ERROR
-Key functional coverage bins are hit
-Meaningful code coverage gaps are reviewed
+UVM_FATAL = 0
+UVM_ERROR = 0
+Key functional coverage bins are exercised
+Meaningful code/FSM/assertion gaps were reviewed
 Regression is repeatable
 Known limitations are documented
 ```
 
-Coverage percentages should only be recorded after actual simulation.
+Final merged UVM coverage results:
+
+| Metric | Final Coverage |
+|---|---:|
+| Functional / Covergroup | 93.33% |
+| Line | 92.56% |
+| Branch | 78.12% |
+| Condition | 74.38% |
+| FSM | 62.86% |
+| Toggle | 36.57% |
+| Assertion | 66.67% |
+| Overall score | 72.07% |
 
 ---
 
 # 46. Current Verification Status
 
-Current project status:
+Final project status:
 
 ```text
-Unit TB source            : Created
-Integration TB source     : Created
-UVM source                : Created
-Scoreboard source         : Created
-Coverage model source     : Created
-Assertion source          : Created
-Regression scripts        : Created
-VCS scripts               : Created
+RTL source                  : Implemented and verified
+Unit testbenches            : Implemented and verified
+Integration testbenches     : Implemented and verified
+UVM environment             : Implemented and verified
+Scoreboard                  : Implemented and verified
+Functional coverage model   : Implemented and executed
+SystemVerilog assertions    : Implemented, bound, and executed
+Regression scripts          : Implemented and used
+VCS scripts                 : Implemented and used
 ```
 
-Current simulator-validation status:
+Final simulator-validation status:
 
 ```text
-Compilation               : Pending
-Unit execution            : Pending
-Integration execution     : Pending
-UVM execution             : Pending
-Assertion execution       : Pending
-Code coverage             : Pending
-Functional coverage       : Pending
-Regression results        : Pending
+Compilation                 : PASS
+Unit execution              : 13/13 PASS
+Integration execution       : 3/3 PASS
+UVM execution               : 15/15 PASS
+UVM_ERROR                   : 0
+UVM_FATAL                   : 0
+Assertion execution         : PASS, 0 failures
+Code coverage               : Collected and reviewed
+Functional coverage         : 93.33%
+Regression results          : PASS
 ```
 
-No PASS percentage or coverage percentage should be claimed until VCS execution is completed.
+Targeted sign-off scenarios also verified:
+
+- 256-byte / 64-DWORD DMA sequencing at the DMA-controller unit level
+- START while BUSY rejection without duplicate traffic
+- Fresh START after completion
+- Completion-vs-DMA TX contention under backpressure
+- Reset during active DMA followed by successful recovery
+- Completion timeout and outstanding-request cleanup
+- Multiple active outstanding-table entries with out-of-order tag matching
+
+Known limits remain explicit: the DMA read engine permits one outstanding DMA read at a time, and sustained fixed-priority arbitration fairness/starvation freedom was not verified.
 
 ---
 
@@ -1387,16 +2025,13 @@ Assertions
 UVM Bring-Up
     |
     v
-Directed UVM Tests
-    |
-    v
-Constrained-Random Tests
+Directed / Seeded UVM Tests
     |
     v
 Multi-Seed Regression
     |
     v
-Code Coverage
+Code + Assertion Coverage
     |
     v
 Functional Coverage
@@ -1405,10 +2040,10 @@ Functional Coverage
 Coverage Analysis
     |
     v
-Targeted Tests
+Targeted Closure Tests
     |
     v
-Regression Re-run
+Final Regression
     |
     v
 Verification Closure
@@ -1450,6 +2085,10 @@ Incoming DMA Completions
 Outstanding Transaction Tracking
 Error Handling
 Timeout Handling
+TX Arbitration
+Reset Recovery
 ```
 
-The project is structured so that verification depth can be expanded after initial VCS bring-up without redesigning the entire environment.
+The final project completed directed, integration, UVM, assertion, and coverage-based verification for the defined simplified PCIe Transaction Layer + DMA scope. The environment remains structured for future extensions without requiring a redesign of the existing verification architecture.
+
+---

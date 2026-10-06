@@ -1810,33 +1810,41 @@ Re-run:
 
 ---
 
-# 43. Planned Test Result Table
+# 43. Final Test Results
 
-Once simulation begins, maintain a result table similar to:
+The final directed and UVM regressions completed successfully.
 
-| Test | Status | Seed | Notes |
-|---|---|---:|---|
-| `tlp_rx_parser_tb` | Pending | - | |
-| `bar_decoder_tb` | Pending | - | |
-| `endpoint_memory_tb` | Pending | - | |
-| `request_handler_tb` | Pending | - | |
-| `completion_engine_tb` | Pending | - | |
-| `tlp_tx_formatter_tb` | Pending | - | |
-| `outstanding_req_table_tb` | Pending | - | |
-| `sync_fifo_tb` | Pending | - | |
-| `timeout_counter_tb` | Pending | - | |
-| `dma_regs_tb` | Pending | - | |
-| `dma_read_engine_tb` | Pending | - | |
-| `dma_write_engine_tb` | Pending | - | |
-| `dma_controller_tb` | Pending | - | |
-| `pcie_endpoint_smoke_tb` | Pending | - | |
-| `pcie_dma_integration_tb` | Pending | - | |
-| `pcie_error_integration_tb` | Pending | - | |
-| `pcie_smoke_test` | Pending | TBD | |
-| `pcie_dma_test` | Pending | TBD | |
-| `pcie_error_test` | Pending | TBD | |
+| Test | Status | Notes |
+|---|---|---|
+| `tlp_rx_parser_tb` | PASS | Unit test |
+| `bar_decoder_tb` | PASS | Unit test |
+| `endpoint_memory_tb` | PASS | Unit test |
+| `request_handler_tb` | PASS | Unit test |
+| `completion_engine_tb` | PASS | Unit test |
+| `tlp_tx_formatter_tb` | PASS | Unit test |
+| `outstanding_req_table_tb` | PASS | Unit test |
+| `sync_fifo_tb` | PASS | Unit test |
+| `timeout_counter_tb` | PASS | Unit test |
+| `dma_regs_tb` | PASS | Unit test |
+| `dma_read_engine_tb` | PASS | Unit test |
+| `dma_write_engine_tb` | PASS | Unit test |
+| `dma_controller_tb` | PASS | Unit test |
+| `pcie_endpoint_smoke_tb` | PASS | Integration test |
+| `pcie_dma_integration_tb` | PASS | Integration test |
+| `pcie_error_integration_tb` | PASS | Integration test |
+| `pcie_smoke_test` | PASS | UVM seeds 1-5 |
+| `pcie_dma_test` | PASS | UVM seeds 1-5 |
+| `pcie_error_test` | PASS | UVM seeds 1-5 |
 
-Do not change a test from `Pending` to `PASS` until it has actually passed in simulation.
+Final regression summary:
+
+```text
+Unit tests        : 13/13 PASS
+Integration tests : 3/3 PASS
+UVM runs          : 15/15 PASS
+UVM_ERROR         : 0
+UVM_FATAL         : 0
+```
 
 ---
 

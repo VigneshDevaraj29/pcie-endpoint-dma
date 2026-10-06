@@ -1012,7 +1012,7 @@ Warnings should also be reviewed, especially width and truncation warnings.
 
 # 38. Recommended Bring-Up Strategy
 
-When VCS access becomes available, use this exact approach:
+The project was brought up and validated in VCS using the following controlled approach:
 
 ```text
 Step 1
@@ -1069,21 +1069,13 @@ sva/dma_assertions.sv
 sva/tag_assertions.sv
 ```
 
-The initial source has been created, but the assertions still need to be connected to the simulation hierarchy.
-
-This can be done using:
+The project assertions are connected using SystemVerilog `bind` through:
 
 ```text
-Direct instantiation
+sva/sva_bind.sv
 ```
 
-or:
-
-```text
-SystemVerilog bind
-```
-
-The final connection approach should be validated during VCS bring-up.
+The bind file attaches PCIe, DMA, and outstanding-request assertions to the corresponding RTL modules and was used during assertion-enabled verification.
 
 ---
 
@@ -1432,25 +1424,25 @@ Maintain a table in project documentation:
 
 | Test | Compile | Run | Result | Notes |
 |---|---|---|---|---|
-| `tlp_rx_parser_tb` | Pending | Pending | Pending | |
-| `bar_decoder_tb` | Pending | Pending | Pending | |
-| `endpoint_memory_tb` | Pending | Pending | Pending | |
-| `request_handler_tb` | Pending | Pending | Pending | |
-| `completion_engine_tb` | Pending | Pending | Pending | |
-| `tlp_tx_formatter_tb` | Pending | Pending | Pending | |
-| `outstanding_req_table_tb` | Pending | Pending | Pending | |
-| `sync_fifo_tb` | Pending | Pending | Pending | |
-| `timeout_counter_tb` | Pending | Pending | Pending | |
-| `dma_regs_tb` | Pending | Pending | Pending | |
-| `dma_read_engine_tb` | Pending | Pending | Pending | |
-| `dma_write_engine_tb` | Pending | Pending | Pending | |
-| `dma_controller_tb` | Pending | Pending | Pending | |
-| `pcie_endpoint_smoke_tb` | Pending | Pending | Pending | |
-| `pcie_dma_integration_tb` | Pending | Pending | Pending | |
-| `pcie_error_integration_tb` | Pending | Pending | Pending | |
-| `pcie_smoke_test` | Pending | Pending | Pending | |
-| `pcie_dma_test` | Pending | Pending | Pending | |
-| `pcie_error_test` | Pending | Pending | Pending | |
+| `tlp_rx_parser_tb` | PASS | PASS | PASS | |
+| `bar_decoder_tb` | PASS | PASS | PASS | |
+| `endpoint_memory_tb` | PASS | PASS | PASS | |
+| `request_handler_tb` | PASS | PASS | PASS | |
+| `completion_engine_tb` | PASS | PASS | PASS | |
+| `tlp_tx_formatter_tb` | PASS | PASS | PASS | |
+| `outstanding_req_table_tb` | PASS | PASS | PASS | |
+| `sync_fifo_tb` | PASS | PASS | PASS | |
+| `timeout_counter_tb` | PASS | PASS | PASS | |
+| `dma_regs_tb` | PASS | PASS | PASS | |
+| `dma_read_engine_tb` | PASS | PASS | PASS | |
+| `dma_write_engine_tb` | PASS | PASS | PASS | |
+| `dma_controller_tb` | PASS | PASS | PASS | |
+| `pcie_endpoint_smoke_tb` | PASS | PASS | PASS | |
+| `pcie_dma_integration_tb` | PASS | PASS | PASS | |
+| `pcie_error_integration_tb` | PASS | PASS | PASS | |
+| `pcie_smoke_test` | PASS | PASS | PASS | |
+| `pcie_dma_test` | PASS | PASS | PASS | |
+| `pcie_error_test` | PASS | PASS | PASS | |
 
 ---
 
@@ -1468,7 +1460,7 @@ Do not report coverage percentages until VCS/URG produces real coverage results.
 
 ---
 
-# 58. First Commands to Run Once Access Is Restored
+# 58. Reproducing the Validation Flow
 
 Use this sequence:
 
@@ -1571,9 +1563,7 @@ python3 scripts/python/run_regression.py --all --seeds 10
 python3 scripts/python/parse_results.py
 ```
 
-The immediate goal once Synopsys VCS access becomes available is not to run the entire regression at once.
-
-The first goal is:
+The project was validated using a controlled, incremental bring-up flow rather than starting with the full regression.
 
 ```text
 Compile one block
@@ -1582,4 +1572,4 @@ Fix it completely
 Move to the next
 ```
 
-This provides a controlled path from initial RTL bring-up to full UVM regression and coverage closure.
+This staged approach led to the final unit, integration, UVM, assertion, and coverage results documented in this repository.
