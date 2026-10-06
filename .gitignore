@@ -20,7 +20,7 @@ cm.log
 # Simulation / coverage outputs
 # ============================================================
 logs/
-coverage/
+/coverage/
 
 *.log
 *.vpd
